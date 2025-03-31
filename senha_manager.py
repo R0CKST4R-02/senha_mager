@@ -14,13 +14,10 @@ def criar_id():
         return
         
     try:
-        # Criar tabela dentro da função
-        cursor.execute(f"""
-        CREATE TABLE IF NOT EXISTS "{user_id}" (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            senha TEXT UNIQUE NOT NULL
-        );
-        """)
+        cursor.execute("""
+            INSERT INTO usuarios (nome) VALUES (?);
+        """, (user_id,))
+
 
         conexao.commit()  # Salvar mudanças
         conexao.close()  # Fechar conexão após a operação
@@ -35,6 +32,34 @@ root.title("Gerenciador de Senhss")
 root.geometry("300x400")
 
 def nova_janela():
+    conexao = sqlite3.connect(db_path)
+    cursor = conexao.cursor()
+
+    user_id = input_user.get().strip()
+
+    if not input_user:
+        label_erro.config(text="prencha o campo!", fg="red")
+        return
+    try:
+        # Consultar se o id e valido
+        cursor.execute(f"""
+        SELECT * FROM usuarios WHERE nome ="{user_id}";
+        """)
+
+        resultado = cursor.fetchone()
+        if resultado != None:
+            print(resultado)
+        else:
+            label_erro.config(text="Usuario Nao encontrado!", fg="red")
+            return
+
+        conexao.commit()
+        conexao.close()
+
+    except sqlite3.Error as e:
+        label_erro.config(text=f"Erro: {e}", fg="red")   
+
+
 
     #fechar a janela principal
     root.destroy()
