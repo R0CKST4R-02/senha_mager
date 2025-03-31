@@ -1,5 +1,34 @@
 import tkinter as tk
- 
+import sqlite3
+
+# Conexão com o banco de dados (o banco já existe na pasta "../bd/")
+db_path = "../../bd/gerar_senhas.db"
+
+def criar_id():
+    conexao = sqlite3.connect(db_path)
+    cursor = conexao.cursor()
+
+    user_id = input.get().strip()  # Pegando o valor do campo Entry do Tkinter
+    if not user_id:
+        label_erro.config(text="Prencha o campo!", fg="red")
+        return
+        
+    try:
+        # Criar tabela dentro da função
+        cursor.execute("""
+        CREATE TABLE IF NOT EXISTS f"{user_id}" (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            senha TEXT UNIQUE NOT NULL
+        );
+        """)
+
+        conexao.commit()  # Salvar mudanças
+        conexao.close()  # Fechar conexão após a operação
+        nova_janela()
+
+    except sqlite3.Error as e:
+        label_erro.config(text=f"Erro: {e}", fg="red")   
+
  #criar janela
 root = tk.Tk()
 root.title("Gerenciador de Senhss")
@@ -32,8 +61,10 @@ def nova_janela():
 label = tk.Label(root, text="Informe o seu ID")
 input = tk.Entry(root)
 botao1 = tk.Button(root, text="Entrar", command=nova_janela)
-botao2 = tk.Button(root, text="Criar ID")
+botao2 = tk.Button(root, text="Criar ID", command=criar_id)
+label_erro = tk.Label(root, text="")  # Label global para mensagens de erro
 
+label_erro.pack()
 input.place(x=70, y=80)
 botao1.place(x=70, y=120)
 botao2.place(x=150, y=120)
