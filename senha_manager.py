@@ -75,10 +75,25 @@ def nova_janela():
     
 
     tk.Label(nova_janela, text="Senhas!").pack(pady=20)
-    lista = {'ezequiel', 'pedro', 'antonio', 'francisco'}
-    for nomes in lista:
-        label = tk.Label(nova_janela, text=f"{nomes}")
-        label.pack()
+    try:
+        # Consultar se o id e valido
+        cursor.execute(f"""
+        SELECT * FROM usuarios WHERE nome ="{user_id}";
+        """)
+
+        resultado = cursor.fetchone()
+        if resultado != None:
+            print(resultado)
+        else:
+            label_erro.config(text="Usuario Nao encontrado!", fg="red")
+            return
+        for nomes in lista:
+            label = tk.Label(nova_janela, text=f"{nomes}")
+            label.pack()
+            
+    except sqlite3.Error as e:
+        label_erro.config(text=f"Erro: {e}", fg="red")   
+
 
     #manter a nova janela aberta
     nova_janela.mainloop()
