@@ -8,15 +8,15 @@ def criar_id():
     conexao = sqlite3.connect(db_path)
     cursor = conexao.cursor()
 
-    user_id = input.get().strip()  # Pegando o valor do campo Entry do Tkinter
+    user_id = input_user.get().strip()
     if not user_id:
         label_erro.config(text="Prencha o campo!", fg="red")
         return
         
     try:
         # Criar tabela dentro da função
-        cursor.execute("""
-        CREATE TABLE IF NOT EXISTS f"{user_id}" (
+        cursor.execute(f"""
+        CREATE TABLE IF NOT EXISTS "{user_id}" (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             senha TEXT UNIQUE NOT NULL
         );
@@ -59,13 +59,13 @@ def nova_janela():
     nova_janela.mainloop()
 
 label = tk.Label(root, text="Informe o seu ID")
-input = tk.Entry(root)
+input_user = tk.Entry(root)
 botao1 = tk.Button(root, text="Entrar", command=nova_janela)
 botao2 = tk.Button(root, text="Criar ID", command=criar_id)
 label_erro = tk.Label(root, text="")  # Label global para mensagens de erro
 
 label_erro.pack()
-input.place(x=70, y=80)
+input_user.place(x=70, y=80)
 botao1.place(x=70, y=120)
 botao2.place(x=150, y=120)
 
